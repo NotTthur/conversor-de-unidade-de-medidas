@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Conversor Completo</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #ff0077, #6f00ff);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .container {
+        width: 420px;
+        background: rgba(255,255,255,0.15);
+        padding: 25px;
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 0 25px rgba(0,0,0,0.3);
+        animation: slideUp 0.9s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(60px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255,255,255,0.6);
+    }
+
+    select, input, button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 12px;
+        border-radius: 10px;
+        border: none;
+        font-size: 17px;
+        outline: none;
+    }
+
+    select, input {
+        background: rgba(255,255,255,0.8);
+    }
+
+    button {
+        background: #00ffcc;
+        color: #003333;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 0 10px #1c0b01;
+    }
+
+    button:hover {
+        background: #50a998;
+        transform: scale(1.05);
+    }
+
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(0,0,0,0.3);
+        color: white;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 20px;
+        animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Conversor Completo</h2>
+
+    <label>Tipo de conversão:</label>
+    <select id="tipo" onchange="carregarUnidades()">
+        <option value="comprimento">Comprimento</option>
+        <option value="area">Área</option>
+        <option value="volume">Volume</option>
+        <option value="distancia">Distância</option>
+    </select>
+
+    <label>Valor:</label>
+    <input type="number" id="valor" placeholder="Digite um valor">
+
+    <label>De:</label>
+    <select id="de"></select>
+
+    <label>Para:</label>
+    <select id="para"></select>
+
+    <button onclick="converter()">Converter</button>
+
+    <div class="result" id="resultado">Resultado aparecerá aqui</div>
+</div>
+
+<script>
+    const unidades = {
+        comprimento: {
+            "mm": 0.001,
+            "cm": 0.01,
+            "m": 1,
+            "km": 1000,
+            "pol (inch)": 0.0254,
+            "pé (ft)": 0.3048,
+            "jarda (yd)": 0.9144,
+            "milha (mi)": 1609.34
+        },
+        area: {
+            "cm²": 0.0001,
+            "m²": 1,
+            "km²": 1_000_000,
+            "hectare (ha)": 10_000,
+            "acre": 4046.86
+        },
+        volume: {
+            "mL": 0.001,
+            "L": 1,
+            "m³": 1000,
+            "galão (gal)": 3.785,
+            "cm³": 0.001
+        },
+        distancia: {
+            "m": 1,
+            "km": 1000,
+            "milha (mi)": 1609.34,
+            "anos-luz (ly)": 9.461e15
+        }
+    };
+
+    function carregarUnidades() {
+        let tipo = document.getElementById("tipo").value;
+        let de = document.getElementById("de");
+        let para = document.getElementById("para");
+
+        de.innerHTML = "";
+        para.innerHTML = "";
+
+        for (let u in unidades[tipo]) {
+            de.innerHTML += `<option value="${u}">${u}</option>`;
+            para.innerHTML += `<option value="${u}">${u}</option>`;
+        }
+    }
+
+    carregarUnidades();
+
+    function converter() {
+        let valor = parseFloat(document.getElementById("valor").value);
+        let tipo = document.getElementById("tipo").value;
+        let de = document.getElementById("de").value;
+        let para = document.getElementById("para").value;
+
+        if (isNaN(valor)) {
+            document.getElementById("resultado").textContent = "Digite um valor válido.";
+            return;
+        }
+
+        let base = valor * unidades[tipo][de];  
+        let convertido = base / unidades[tipo][para];
+
+        document.getElementById("resultado").textContent =
+            `Resultado: ${convertido.toFixed(2)} ${para}`;
+    }
+</script>
+
+</body>
+</html>
